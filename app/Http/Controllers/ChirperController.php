@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Chirp;
 use Illuminate\Http\Request;
 
 class ChirperController extends Controller
@@ -11,7 +12,8 @@ class ChirperController extends Controller
      */
     public function index()
     {
-        //
+        $chirps = Chirp::with('user')->latest()->get();
+        return view('home', ['chirps' => $chirps]);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Chirp;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ChirperController extends Controller
 {
@@ -29,7 +30,23 @@ class ChirperController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $$validated = $request->validate([
+            'message' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('chirps')->where(function ($query) use ($user) {
+                    return $query->where('user_id', $user->id);
+                })
+            ],
+        ]);
+
+        \App\Models\Chirp::create([
+            'message' => $validated['message'],
+            'user_id' => null,
+        ]);
+
+        return redirect('/')->with('success', 'Your chirp has been posted!');
     }
 
     /**
